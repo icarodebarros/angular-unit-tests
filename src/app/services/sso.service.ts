@@ -21,7 +21,7 @@ export class SsoService {
   }
 
   private validateResponse(authenticateResponse: IUserResponse): IUser {
-    if (authenticateResponse && authenticateResponse.id) {
+    if (authenticateResponse && authenticateResponse.id) { // if (authenticateResponse instanceof UserResponse)
       const user: IUser = {
         id: authenticateResponse.id,
         name: authenticateResponse.users[0].userName,

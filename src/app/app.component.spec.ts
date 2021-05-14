@@ -71,4 +71,12 @@ describe('AppComponent', () => {
     expect(pName.textContent).toEqual('Icaro de Barros');
   });
 
+  it('should display the user name and id', () => {
+    const id = component.user?.id;
+    const name = component.user?.name;
+    
+    expect(id).toEqual('1234');
+    expect(name).toEqual('Icaro de Barros');
+  });
+
 });

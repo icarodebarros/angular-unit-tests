@@ -33,17 +33,17 @@ describe('UserComponent', () => {
     component.userInfo = { id: '', name: '', codes: []}; // Pra forçar a entrada no if do método ngAfterContentInit()
     fixture.detectChanges();
 
-    expect(component).toBeTruthy();
+    expect(component).toBeTruthy(); //falsy: false, 0, '', null, undefined, NaN
   });
 
   it('should add a user', () => {
     component.novoNome = 'Joao da Silva';
     component.novaIdade = '22';
-    const currentLength = component.usuarios.length;
+    const oldLength = component.usuarios.length;
     component.addUsuario();
     const newLength = component.usuarios.length;
 
-    expect(newLength).toEqual(currentLength + 1);
+    expect(newLength).toEqual(oldLength + 1);
     expect(component.usuarios[newLength-1].nome).toEqual('Joao da Silva');
     expect(component.usuarios[newLength-1].idade).toEqual('22');
   });
@@ -56,11 +56,20 @@ describe('UserComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
+  it('should remove a user', () => {
+    const indexToRemove = 1;
+
+    const oldLength = component.usuarios.length;
+    component.removeUsuario(indexToRemove);
+
+    expect(component.usuarios.length).toEqual(oldLength-1);
+  });
+
   // Essa função é assíncrona pois o html está usando o two-way-data-biding (ngModule)
   it('should try add another user and display on table', async () => {
     await fixture.whenStable();
 
-    const currentLength = component.usuarios.length;
+    const oldLength = component.usuarios.length;
 
     const userElement = fixture.nativeElement;
     const nameInput: HTMLInputElement = userElement.querySelector('#nome');
@@ -76,26 +85,26 @@ describe('UserComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.usuarios.length).toEqual(currentLength+1);
+    expect(component.usuarios.length).toEqual(oldLength+1);
 
   });
 
   it('should remove a user from table', () => {
-    const currentLength = component.usuarios.length;
+    const oldLength = component.usuarios.length;
 
     const userElement = fixture.nativeElement;
     const removeButton: HTMLButtonElement = userElement.querySelector('#remove-btn'); // pega o primeiro encontrado
 
     removeButton.click();
 
-    expect(component.usuarios.length).toEqual(currentLength-1);
+    expect(component.usuarios.length).toEqual(oldLength-1);
   });
 
   it('should try remove a user with a nonexistent index', () => {
-    const currentLength = component.usuarios.length;
+    const oldLength = component.usuarios.length;
     component.removeUsuario(5);
 
-    expect(component.usuarios.length).toEqual(currentLength);
+    expect(component.usuarios.length).toEqual(oldLength);
   });
 
 });

@@ -7,19 +7,21 @@ import { of } from 'rxjs';
 
 describe('SsoService', () => {
   let service: SsoService;
-  let httpClient: jasmine.SpyObj<HttpClient>;
+  let httpClient: HttpClient;
 
   beforeEach(() => {
-    const spyHttpClient = jasmine.createSpyObj('HttpClient', ['get']);
+    const httpClientStub = {
+      get: () => {},
+    }
 
     TestBed.configureTestingModule({
       providers: [
-        {provide: HttpClient, useValue: spyHttpClient},
+        {provide: HttpClient, useValue: httpClientStub},
       ]
     });
 
     service = TestBed.inject(SsoService); // = TestBed.get(SsoService);
-    httpClient = TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>; // = TestBed.get(HttpClient);
+    httpClient = TestBed.inject(HttpClient); // = TestBed.get(HttpClient);
   });
 
   it('should be created', () => {
@@ -45,7 +47,7 @@ describe('SsoService', () => {
       ]
     };
 
-    httpClient.get.and.returnValue(of(mockResponse));
+    spyOn(httpClient, 'get').and.returnValue(of(mockResponse));
     
     service.authenticate()
       .subscribe((user: IUser) => {
@@ -57,7 +59,7 @@ describe('SsoService', () => {
 
   it('should try to authenticate and throw an Error', () => {
 
-    httpClient.get.and.returnValue(of(new Error('User not found')));
+    spyOn(httpClient, 'get').and.returnValue(of(new Error('User not found')));
 
     service.authenticate()
       .subscribe(
